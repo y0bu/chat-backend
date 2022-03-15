@@ -1,13 +1,20 @@
 import request from "supertest";
 import app from "../app";
 import "dotenv/config";
+import User from "../models/User.js";
+import Message from "../models/Message.js";
+
+beforeAll(async () => {
+    await User.deleteMany({});
+    await Message.deleteMany({});
+});
 
 describe("signup testing", () => {
 
     it("signup regularly", async () => {
         const response = await request(app).post("/api/v1/users/signup/").send({ username: "yoav", password: "P@ssW0rd24" });
-        expect(response.statusCode).toEqual(201);
         expect(response.text).toEqual("OK");
+        expect(response.statusCode).toEqual(201);
     });
 
     it("signup with taken username", async () => {

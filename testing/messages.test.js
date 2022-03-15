@@ -41,6 +41,8 @@ describe("adding messages", () => {
 
 });
 
+var id;
+
 describe("getting messages test", () => {
 
     var data;
@@ -53,6 +55,7 @@ describe("getting messages test", () => {
     it("this is from the first 'it', which is testing insertion of regular message.", () => {
         expect(data[0].message).toEqual("message test");
         expect(data[0].creator).toEqual("tester-admin");
+        id = data[0]._id;
     });
 
     it("this is from the second 'it', which is testing insertion of regular message with weird token, thus, I must not see another message.", () => {
@@ -63,4 +66,13 @@ describe("getting messages test", () => {
         expect(data[2]).tobeNullOrUndefined();
     });
 
+});
+
+describe("removing the message test", () => {
+    it("remove the message", async () => {
+        await request(app).delete("/api/v1/messages/delete/").set("Authorization", `Bearer ${token}`).send({ id: id });
+        const response = await request(app).post("/api/v1/messages/").set("Authorization", `Bearer ${token}`);
+        const data = eval(response.text);
+        expect(data).toEqual([]);
+    });
 });
