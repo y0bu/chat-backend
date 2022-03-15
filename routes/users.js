@@ -28,7 +28,7 @@ router.post("/signup", async (request, response, next) => {
     const user = new User(request.body);
     user.save();
 
-    response.status(201).send();
+    response.status(201).send("OK");
 });
 
 const passwordChecker = (password) => {
