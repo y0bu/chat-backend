@@ -20,6 +20,6 @@ if (process.env.NODE_ENV !== 'test') app.listen(3000);
 export default app;
 
 // create frontend with reactjs
-// all messages are getting deleted every day(24h)
 // add one on one
+// all messages are getting deleted every day(24h), except for the one on one rooms
 // add rooms

@@ -14,6 +14,8 @@ beforeAll(function () {
 });
 
 var token;
+var id;
+var tokenTwo;
 
 describe("first, lets insert some values to the database", () => {
     it("...", async () => {
@@ -40,8 +42,6 @@ describe("adding messages", () => {
     });
 
 });
-
-var id;
 
 describe("getting messages test", () => {
 
@@ -75,4 +75,28 @@ describe("removing the message test", () => {
         const data = eval(response.text);
         expect(data).toEqual([]);
     });
+});
+
+describe("inserting a message with new user and trying to delete it with the first user with id", () => {
+    
+    it("inserting accounts", async () => {
+        await request(app).post("/api/v1/users/signup/").send({ username: "tester-admin-2", password: "P@ssW0rd24" });
+        const response = await request(app).post("/api/v1/users/signin/").send({ username: "tester-admin-2", password: "P@ssW0rd24" });
+        tokenTwo = response.text;
+    });
+
+    it("inserting messages", async () => {
+        await request(app).post("/api/v1/messages/create/").set("Authorization", `Bearer ${token}`).send({ message: "message test, but delete with other user" });
+        const response = await request(app).post("/api/v1/messages/").set("Authorization", `Bearer ${token}`);
+        const data = eval(response.text);
+        id = data[0]._id;
+    });
+
+    it("trying to delete them with the second user and checking whether the data is deleted or not", async () => {
+        await request(app).delete("/api/v1/messages/delete/").set("Authorization", `Bearer ${tokenTwo}`).send({ id: id });
+        const response = await request(app).post("/api/v1/messages/").set("Authorization", `Bearer ${token}`);
+        const data = eval(response.text);
+        expect(data).not.toEqual([]);
+    });
+
 });
