@@ -1,11 +1,10 @@
 import jwt from "jsonwebtoken";
-
-export const KEY = "ISRAEL";
+import "dotenv/config"
 
 const auth = async (request, response, next) => {
     try {
         const token = request.headers.authorization.split(" ")[1];
-        let decodedData = jwt.verify(token, KEY);
+        let decodedData = jwt.verify(token, process.env.KEY);
         request.userId = decodedData?.id;
         next();
     }
