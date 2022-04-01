@@ -14,10 +14,14 @@ router.post("/create", authVer, async (request, response, next) => {
 
 router.post("/", authVer, async (request, response, next) => {
     const messages = await Message.find();
+    const user = await User.findById(request.userId);
+    for (let i = 0; i < messages.length; ++i) {
+        if (messages[i].creator === user.username) { messages[i] = messages[i].toObject(); messages[i].user = ""; } 
+    }
     response.status(201).send(messages);
 });
 
-router.delete("/delete", authVer, async (request, response, next) => {
+router.post("/delete", authVer, async (request, response, next) => {
     const user = await User.findById(request.userId);
     await Message.findOneAndDelete({$and: [{_id: new mongoose.Types.ObjectId(request.body.id)}, {creator: user.username}]});
     response.status(201).send("OK");

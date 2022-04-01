@@ -20,7 +20,7 @@ router.post("/signin", async (request, response, next) => {
 router.post("/signup", async (request, response, next) => {
     const isUsernameExist = await User.findOne({ username: request.body.username });
     
-    if (isUsernameExist) return response.status(400).send("exist");
+    if (isUsernameExist) return response.status(400).send("username already exists");
 
     const isPasswordStrong = passwordChecker(request.body.password);
     if (isPasswordStrong !== true) return response.status(400).send(isPasswordStrong);

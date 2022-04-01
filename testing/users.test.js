@@ -20,7 +20,7 @@ describe("signup testing", () => {
     it("signup with taken username", async () => {
         const response = await request(app).post("/api/v1/users/signup/").send({ username: "yoav", password: "P@ssW0rd24" });
         expect(response.statusCode).toEqual(400);
-        expect(response.text).toEqual("exist");
+        expect(response.text).toEqual("username already exists");
     });
 
     it("signup with bad password", async () => {

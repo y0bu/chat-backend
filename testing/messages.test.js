@@ -55,6 +55,7 @@ describe("getting messages test", () => {
     it("this is from the first 'it', which is testing insertion of regular message.", () => {
         expect(data[0].message).toEqual("message test");
         expect(data[0].creator).toEqual("tester-admin");
+        expect(data[0].user).toEqual("");
         id = data[0]._id;
     });
 
@@ -70,7 +71,7 @@ describe("getting messages test", () => {
 
 describe("removing the message test", () => {
     it("remove the message", async () => {
-        await request(app).delete("/api/v1/messages/delete/").set("Authorization", `Bearer ${token}`).send({ id: id });
+        await request(app).post("/api/v1/messages/delete/").set("Authorization", `Bearer ${token}`).send({ id: id });
         const response = await request(app).post("/api/v1/messages/").set("Authorization", `Bearer ${token}`);
         const data = eval(response.text);
         expect(data).toEqual([]);
@@ -87,8 +88,9 @@ describe("inserting a message with new user and trying to delete it with the fir
 
     it("inserting messages", async () => {
         await request(app).post("/api/v1/messages/create/").set("Authorization", `Bearer ${token}`).send({ message: "message test, but delete with other user" });
-        const response = await request(app).post("/api/v1/messages/").set("Authorization", `Bearer ${token}`);
+        const response = await request(app).post("/api/v1/messages/").set("Authorization", `Bearer ${tokenTwo}`);
         const data = eval(response.text);
+        expect(data[0].user).not.toEqual("");
         id = data[0]._id;
     });
 
